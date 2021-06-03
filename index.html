@@ -1,11 +1,9 @@
 <!doctype html>
 <html class="no-js" lang="">
-
 <head>
   <meta charset="utf-8">
   <meta name="description" content="deck.gl with  Google Maps Platform">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <meta property="og:title" content="">
   <meta property="og:type" content="">
   <meta property="og:url" content="">
@@ -14,15 +12,13 @@
   <link rel="manifest" href="site.webmanifest">
   <link rel="apple-touch-icon" href="icon.png">
   <!-- Place favicon.ico in the root directory -->
-
   <link rel="stylesheet" href="css/normalize.css">
   <link rel="stylesheet" href="css/main.css">
-
   <meta name="theme-color" content="#fafafa">
   <title>deck.gl and Google Maps Platform</title>
   <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
   <!-- Use Material Design Progress indicator -->
-  <link href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.css" rel="stylesheet" />
+  <link href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.css" rel="stylesheet"/>
   <script src="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.js"></script>
   <!-- Load deck.gl -->
   <script src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
@@ -55,7 +51,7 @@
     // Initialize and add the map
     function initMap() {
       const map = new google.maps.Map(document.getElementById("map"), {
-        center: { lat: 51.5, lng: 0 },
+        center: {lat: 51.5, lng: 0},
         zoom: 11,
       });
       const deckOverlay = new deck.GoogleMapsOverlay({
@@ -94,7 +90,7 @@
       deckOverlay.setMap(map);
     }
 
-    function getTooltip({ object }) {
+    function getTooltip({object}) {
       return object && {
         html: `
                 <h3 style="text-align:center;">_______________________</h3>
@@ -110,7 +106,6 @@
         }
       }
     }
-
 
     function getIfNotSet(value) {
       if (typeof (value) === 'undefined') {
@@ -147,40 +142,36 @@
     }
   </script>
 </head>
-
 <body>
-  <!-- Add your site or application content here -->
-  <p>Go Eve Map of EV Charging Points.</p>
-  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/main.js"></script>
-
-  <div role="progressbar" class="mdc-linear-progress" aria-label="Data Progress Bar">
-    <div class="mdc-linear-progress__buffer">
-      <div class="mdc-linear-progress__buffer-bar"></div>
-      <div class="mdc-linear-progress__buffer-dots"></div>
-    </div>
-    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
-      <span class="mdc-linear-progress__bar-inner"></span>
-    </div>
-    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
-      <span class="mdc-linear-progress__bar-inner"></span>
-    </div>
+<!-- Add your site or application content here -->
+<script src="js/vendor/modernizr-3.11.2.min.js"></script>
+<script src="js/plugins.js"></script>
+<script src="js/main.js"></script>
+<div role="progressbar" class="mdc-linear-progress" aria-label="Data Progress Bar">
+  <div class="mdc-linear-progress__buffer">
+    <div class="mdc-linear-progress__buffer-bar"></div>
+    <div class="mdc-linear-progress__buffer-dots"></div>
   </div>
-  <script>
-    var progress, progressDiv;
-    progressDiv = document.querySelector(".mdc-linear-progress");
-    progress = new mdc.linearProgress.MDCLinearProgress(progressDiv);
-    progress.open();
-    progress.determinate = false;
-    progress.done = function () {
-      progress.close();
-      progressDiv.remove();
-    };
-  </script>
-  <div id="map"></div>
+  <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+    <span class="mdc-linear-progress__bar-inner"></span>
+  </div>
+  <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+    <span class="mdc-linear-progress__bar-inner"></span>
+  </div>
+</div>
+<script>
+  var progress, progressDiv;
+  progressDiv = document.querySelector(".mdc-linear-progress");
+  progress = new mdc.linearProgress.MDCLinearProgress(progressDiv);
+  progress.open();
+  progress.determinate = false;
+  progress.done = function () {
+    progress.close();
+    progressDiv.remove();
+  };
+</script>
+<div id="map"></div>
 </body>
-
 </html>
 
 
