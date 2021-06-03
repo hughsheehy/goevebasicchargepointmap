@@ -1,0 +1,186 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="deck.gl and Google Maps Platform">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="theme-color" content="#fafafa">
+  <title>deck.gl and Google Maps Platform</title>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+  <!-- Use Material Design Progress indicator -->
+  <link href="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.css" rel="stylesheet" />
+  <script src="https://unpkg.com/material-components-web@6.0.0/dist/material-components-web.min.js"></script>
+  <!-- Load deck.gl -->
+  <script src="https://unpkg.com/deck.gl@^8.0.0/dist.min.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIFavmfaxOno5XOVzELJceX0x-GvEUbdA&callback=initMap"
+          defer></script>
+  <style type="text/css">
+    :root {
+      --mdc-theme-primary: #1a73e8;
+      --mdc-theme-secondary: rgb(225, 245, 254);
+      --mdc-theme-on-primary: #fff;
+      --mdc-theme-on-secondary: rgb(1, 87, 155);
+    }
+
+    /* Always set the map height explicitly to define the size of the div
+   * element that contains the map. */
+    #map {
+      height: 100%;
+    }
+
+    /* Optional: Makes the sample page fill the window. */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+    }
+  </style>
+  <script>
+    /* eslint-disable no-undef */
+    // Initialize and add the map
+    function initMap() {
+      const map = new google.maps.Map(document.getElementById("map"), {
+        center: { lat: 51.5, lng: 0 },
+        zoom: 11,
+      });
+      const deckOverlay = new deck.GoogleMapsOverlay({
+        layers: [
+          new deck.GeoJsonLayer({
+            id: "ChargingPointsUK",
+            data: "https://qmobilitymapsdata.blob.core.windows.net/geojsonformaps/gbpoigeo.json",
+            filled: true,
+            pointRadiusMinPixels: 6,
+            pointRadiusMaxPixels: 50,
+            opacity: 0.5,
+            pickable: true,
+            pointRadiusScale: 1,
+            getLineWidth: 6,
+            getRadius: (f) => (10 * f.properties.Connectors[0].PowerKW),
+            getFillColor: (g) => (hexToRgb(stringToColour(getIfNotSet(g.properties.Operator.Title)))),
+            autoHighlight: true,
+            controller: true,
+            //                       onHover: updateTooltip,
+            transitions: {
+              getRadius: {
+                type: "spring",
+                stiffness: 0.1,
+                damping: 0.15,
+                enter: (_) => [0],
+                duration: 10000,
+              },
+            },
+            onDataLoad: (_) => {
+              progress.done(); // hides progress bar
+            },
+          }),
+        ],
+        getTooltip,
+      });
+      deckOverlay.setMap(map);
+    }
+
+    function getTooltip({ object }) {
+      return object && {
+        html: `
+                <h3 style="text-align:center;">_______________________</h3>
+                <h1 style="text-align:center;">${object.properties.Operator.Title}</h1>
+                <h2 style="text-align:center;">${object.properties.Name}</h2>
+                <h2 style="text-align:center;">${object.properties.Connectors[0].PowerKW} KW</h2>
+                <h3 style="text-align:center;">_______________________</h3>
+                `,
+        style: {
+          backgroundColor: '#1565C0',
+          color: "white",
+          fontSize: '0.8em'
+        }
+      }
+    }
+
+
+    function getIfNotSet(value) {
+      if (typeof (value) === 'undefined') {
+        return "blank";
+      } else if (value === null) {
+        return "blank";
+      } else if (value === 0) {
+        return "blank";
+      } else {
+        return value;
+      }
+    }
+
+    var stringToColour = function (str) {
+      var hash = 0;
+      for (var i = 0; i < str.length; i++) {
+        hash = str.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      var colour = '#';
+      for (var i = 0; i < 3; i++) {
+        var value = (hash >> (i * 8)) & 0xFF;
+        colour += ('00' + value.toString(16)).substr(-2);
+      }
+      return colour;
+    }
+
+    function hexToRgb(hex) {
+      var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16), 255
+      ] : null;
+    }
+  </script>
+</head>
+
+<body>
+  <!-- Add your site or application content here -->
+  <p>Go Eve Map of EV Charging Points.</p>
+  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/main.js"></script>
+
+  <div role="progressbar" class="mdc-linear-progress" aria-label="Data Progress Bar">
+    <div class="mdc-linear-progress__buffer">
+      <div class="mdc-linear-progress__buffer-bar"></div>
+      <div class="mdc-linear-progress__buffer-dots"></div>
+    </div>
+    <div class="mdc-linear-progress__bar mdc-linear-progress__primary-bar">
+      <span class="mdc-linear-progress__bar-inner"></span>
+    </div>
+    <div class="mdc-linear-progress__bar mdc-linear-progress__secondary-bar">
+      <span class="mdc-linear-progress__bar-inner"></span>
+    </div>
+  </div>
+  <script>
+    var progress, progressDiv;
+    progressDiv = document.querySelector(".mdc-linear-progress");
+    progress = new mdc.linearProgress.MDCLinearProgress(progressDiv);
+    progress.open();
+    progress.determinate = false;
+    progress.done = function () {
+      progress.close();
+      progressDiv.remove();
+    };
+  </script>
+  <div id="map"></div>
+</body>
+
+</html>
+
+
